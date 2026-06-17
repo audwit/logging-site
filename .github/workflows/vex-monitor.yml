@@ -155,6 +155,7 @@ jobs:
 
             # Open the PR
             gh pr create \
+              --draft \
               --base  "${BASE_BRANCH}" \
               --head  "${BRANCH}" \
               --title "security: draft VDR for ${CVE_ID}" \
@@ -183,8 +184,7 @@ jobs:
           - NVD: https://nvd.nist.gov/vuln/detail/${CVE_ID}
           - OSV: https://osv.dev/vulnerability/${CVE_ID}
           PREOF
-          )" \
-              --label "security"
+          )"
 
             # Return to base branch for the next iteration
             git checkout "${BASE_BRANCH}"
