@@ -42,11 +42,18 @@ jobs:
           path: callgraph-metadata
           # No token needed — public repo
 
+      - name: Check out vex-generation-service (read-only)
+        uses: actions/checkout@v4
+        with:
+          repository: vex-generation-toolset/vex-generation-service
+          path: vex-generation-service
+          # No token needed — public repo
+
       # ── Python setup ────────────────────────────────────────────────────
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: "3.11"
+          python-version: "3.12"
 
       # osv_scan.py and vex_draft.py use only stdlib — no pip install needed.
 
@@ -131,7 +138,9 @@ jobs:
                       [sys.executable, 'scripts/vex_draft.py',
                        '--cve-id',   f['cve_id'],
                        '--finding',  json.dumps(f),
-                       '--vuln-dir', 'src/vulnerabilities'],
+                       '--vuln-dir', 'src/vulnerabilities',
+                       '--callgraph-metadata-dir', 'callgraph-metadata',
+                       '--vex-service-dir', 'vex-generation-service'],
                       check=True,
                   )
           "
