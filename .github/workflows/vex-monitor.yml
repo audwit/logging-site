@@ -47,7 +47,6 @@ jobs:
         uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-          cache: pip
 
       # osv_scan.py and vex_draft.py use only stdlib — no pip install needed.
 
