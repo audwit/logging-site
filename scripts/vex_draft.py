@@ -289,11 +289,11 @@ def _build_service_input(
     chain: list[dict] = []
     root_cg = _callgraph_path(metadata_dir, root_purl)
     if root_cg:
-        chain.append({"purl": root_purl, "callgraph": root_cg.as_uri()})
+        chain.append({"purl": root_purl, "callgraph": root_cg.resolve().as_uri()})
 
     dep_cg = _callgraph_path(metadata_dir, dep_purl)
     if dep_cg:
-        chain.append({"purl": dep_purl, "callgraph": dep_cg.as_uri()})
+        chain.append({"purl": dep_purl, "callgraph": dep_cg.resolve().as_uri()})
 
     return {
         "cve_id": cve_id,
