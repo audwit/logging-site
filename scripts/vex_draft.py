@@ -351,19 +351,29 @@ def _run_vex_service(service_dir: Path, input_data: dict) -> list | None:
 def _extract_analysis(service_output: list, root_purl: str) -> dict | None:
     """
     Walk the service output (list-of-chains of PackageToVex dicts) and return
-    the first analysis dict found for the root component's purl, or None.
+    the analysis dict for the root component's purl. If the root component has
+    no callgraph in callgraph-metadata (and so is absent from the chain), fall
+    back to the first analysis found in the output — which represents the
+    vulnerable dependency's reachability assessment.
     """
     root_base = re.sub(r"[@?#].*", "", root_purl)
+    first_analysis = None
+
     for chain_results in service_output:
         for pkg_vex in chain_results:
-            pkg_base = re.sub(r"[@?#].*", "", pkg_vex.get("purl", ""))
-            if pkg_base != root_base:
-                continue
             for vuln in pkg_vex.get("vex", {}).get("vulnerabilities", []):
                 analysis = vuln.get("analysis")
-                if analysis:
+                if not analysis:
+                    continue
+                # Prefer exact match on root purl
+                pkg_base = re.sub(r"[@?#].*", "", pkg_vex.get("purl", ""))
+                if pkg_base == root_base:
                     return analysis
-    return None
+                # Remember the first analysis seen as fallback
+                if first_analysis is None:
+                    first_analysis = analysis
+
+    return first_analysis
 
 
 # ── Enriched draft builder ─────────────────────────────────────────────────────
