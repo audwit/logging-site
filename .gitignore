@@ -42,3 +42,8 @@ node_modules
 package-lock.json
 # Maven extensions
 /.mvn/extensions.xml
+
+# Python
+__pycache__/
+*.pyc
+.venv/

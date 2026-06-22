@@ -1,0 +1,4 @@
+cyclonedx-python-lib==11.5.0
+packageurl-python==0.17.6
+PyGithub==2.8.1
+git+https://github.com/vex-generation-toolset/vex-generation-service.git@feat/make-python-package
