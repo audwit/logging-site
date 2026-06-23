@@ -45,7 +45,7 @@ def get_advisories_by_purl(purls: list[PackageURL], g: Github) -> list[Advisory]
     for gh_advisory in g.get_global_advisories(ecosystem="maven", affects=affected):
         for gh_vulnerability in gh_advisory.vulnerabilities:
             purl = package_to_purl.get(gh_vulnerability.package.name, None)
-            if purl:
+            if purl and gh_advisory.cve_id:
                 advisories.append(Advisory(cve_id=gh_advisory.cve_id, purl=purl))
     return advisories
 
