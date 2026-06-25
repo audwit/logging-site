@@ -2,9 +2,6 @@
 name: Check CVEs
 run-name: Check CVEs for ${{ inputs.sbom_file }}
 on:
-  schedule:
-    # Run daily at 06:00 UTC
-    - cron: "0 6 * * *"
   workflow_dispatch:
     inputs:
       sbom_file:
@@ -39,9 +36,8 @@ jobs:
 
       - name: Generate VEX entries for new CVEs
         env:
-          SBOM_FILE: ${{ github.event.inputs.sbom_file || 'sboms/log4j-core-2.25.4.json' }}
+          SBOM_FILE: ${{ github.event.inputs.sbom_file }}
           GH_TOKEN: ${{ github.token }}
-          GITHUB_REPOSITORY: ${{ github.repository }}
         run: |
           python scripts/check_cve.py "$SBOM_FILE" | while read -r inputs; do
             gh workflow run generate_vex.yml --json <<<"$inputs"
