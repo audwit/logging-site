@@ -7,7 +7,7 @@ import urllib.error
 from typing import Any
 
 # Base URL for callgraph metadata
-CALLGRAPH_BASE_URL = "https://raw.githubusercontent.com/vex-generation-toolset/callgraph-metadata/refs/heads/main/"
+CALLGRAPH_BASE_URL = "https://raw.githubusercontent.com/audwit/callgraph-metadata/refs/heads/main/"
 
 
 def __get_root_cause_url(cve: str) -> str:

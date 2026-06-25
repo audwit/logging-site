@@ -14,7 +14,7 @@ from dependency_chain import find_dependency_chains
 from root_cause import find_root_cause_functions
 from vex_generation_service.analysis import Analysis
 
-CALLGRAPH_BASE_URL = "https://raw.githubusercontent.com/vex-generation-toolset/callgraph-metadata/refs/heads/main"
+CALLGRAPH_BASE_URL = "https://raw.githubusercontent.com/audwit/callgraph-metadata/refs/heads/main"
 
 # CycloneDX uses "in_triage"; OpenVEX/CSAF uses "under_investigation".
 # Flip to "in_triage" if vex-input/*.json is validated against the CycloneDX 1.4 enum.
