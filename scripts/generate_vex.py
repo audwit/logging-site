@@ -110,9 +110,9 @@ def __undetermined_entry(artifact_purl: PackageURL, cve_id: str, project_label: 
     }
 
 
-def __generate_vex_input_entry(vex_data: list[list[Any]], artifact_purl: PackageURL, solr_version: str, project_label: str) -> Any:
+def __generate_vex_input_entry(vex_data: list[list[Any]], artifact_purl: PackageURL, cve_id: str, solr_version: str, project_label: str) -> Any:
     if not vex_data:
-        return __undetermined_entry(artifact_purl, "UNKNOWN", project_label, solr_version)
+        return __undetermined_entry(artifact_purl, cve_id, project_label, solr_version)
 
     entries = []
     for chain_data in vex_data:
@@ -184,8 +184,6 @@ if __name__ == "__main__":
             json.dump(vex_data, analysis_file, indent=2)
 
     # Write summarized VEX to vex-input folder
-    vex_input_entry = __generate_vex_input_entry(vex_data, artifact, solr_version, project_label)
-    if not vex_data:
-        vex_input_entry["ids"] = [cve_id]
+    vex_input_entry = __generate_vex_input_entry(vex_data, artifact, cve_id, solr_version, project_label)
     with open(f"vex-input/{cve_id}.json", "w") as vex_input_file:
         json.dump(vex_input_entry, vex_input_file, indent=2)
