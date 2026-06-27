@@ -62,4 +62,4 @@ jobs:
           git add vex-input vexplanation
           git commit -F "$RUNNER_TEMP/commit-message.md"
           git push --set-upstream origin vex/${CVE_ID}
-          gh pr create --base main --fill-first
+          gh pr create --base vex-gen-test --fill-first
