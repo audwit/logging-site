@@ -60,12 +60,16 @@ def generate_vex(sbom: Bom, artifact: PackageURL, cve_id: str, tempdir: str) -> 
         analysis = Analysis(vex_input)
         analysis.run()
         analysis.export_vex(vex_output)
+        if not os.path.exists(vex_output):
+            return []  # Engine ran but found no results (0 sinks)
         with (open(vex_output, "r") as f):
             vex_data = json.load(f)
         return vex_data
     finally:
-        os.unlink(vex_input)
-        os.unlink(vex_output)
+        if os.path.exists(vex_input):
+            os.unlink(vex_input)
+        if os.path.exists(vex_output):
+            os.unlink(vex_output)
 
 
 def __format_chain(chain_data: list[Any]) -> str:
