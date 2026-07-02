@@ -79,31 +79,32 @@ def list_advisories(sbom: Bom) -> list[Advisory]:
 
 
 if __name__ == "__main__":
-    if len(sys.argv) != 2:
-        print(f"Usage: {sys.argv[0]} <sbom-path>", file=sys.stderr)
+    if len(sys.argv) < 2:
+        print(f"Usage: {sys.argv[0]} <sbom-path>...", file=sys.stderr)
         sys.exit(1)
-
-    if not os.path.exists(sys.argv[1]):
-        print(f"SBOM file {sys.argv[1]} does not exist", file=sys.stderr)
-        sys.exit(1)
-
-    sbom_file = sys.argv[1]
-    with open(sbom_file, "rb") as f:
-        data = f.read()
 
     gh_repo = os.environ.get("GITHUB_REPOSITORY")
     if not gh_repo:
         print("GITHUB_REPOSITORY environment variable is not set", file=sys.stderr)
         sys.exit(1)
-    sbom: Bom = Bom.from_json(data=json.loads(data))
-    advisories = list_advisories(sbom)
-    for advisory in advisories:
-        cve_id = advisory.cve_id
-        if should_generate_vex(gh_repo, cve_id) == 0:
-            # Inputs for the generate_vex workflow
-            inputs = {
-                "sbom_file": sbom_file,
-                "artifact_purl": advisory.purl.to_string(),
-                "cve_id": cve_id
-            }
-            print(json.dumps(inputs))
+
+    for sbom_file in sys.argv[1:]:
+        if not os.path.exists(sbom_file):
+            print(f"SBOM file {sbom_file} does not exist", file=sys.stderr)
+            sys.exit(1)
+
+        with open(sbom_file, "rb") as f:
+            data = f.read()
+
+        sbom: Bom = Bom.from_json(data=json.loads(data))
+        advisories = list_advisories(sbom)
+        for advisory in advisories:
+            cve_id = advisory.cve_id
+            if should_generate_vex(gh_repo, cve_id) == 0:
+                # Inputs for the generate_vex workflow
+                inputs = {
+                    "sbom_file": sbom_file,
+                    "artifact_purl": advisory.purl.to_string(),
+                    "cve_id": cve_id
+                }
+                print(json.dumps(inputs))

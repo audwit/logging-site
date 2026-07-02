@@ -2,12 +2,14 @@
 name: Check CVEs
 run-name: Check CVEs for ${{ inputs.sbom_file }}
 on:
+  schedule:
+    - cron: '0 10 * * *'
   workflow_dispatch:
     inputs:
       sbom_file:
-        description: 'Path to the SBOM file'
-        required: true
-        default: "sboms/log4j-core-2.25.4.json"
+        description: 'Path to the SBOM file (leave empty to scan all SBOMs)'
+        required: false
+        default: ""
         type: string
 
 # No permissions by default, permissions are granted at the job level
@@ -39,6 +41,7 @@ jobs:
           SBOM_FILE: ${{ github.event.inputs.sbom_file }}
           GH_TOKEN: ${{ github.token }}
         run: |
-          python scripts/check_cve.py "$SBOM_FILE" | while read -r inputs; do
+          SBOMS="${SBOM_FILE:-sboms/*.json}"
+          python scripts/check_cve.py $SBOMS | while read -r inputs; do
             gh workflow run generate_vex.yml --json <<<"$inputs"
           done
